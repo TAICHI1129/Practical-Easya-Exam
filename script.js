@@ -1,10 +1,14 @@
-const QUESTIONS_URL =
-    "https://example.com/questions.txt";
+const SERVER_URL = "https://example.com";
+
+const QUESTIONS_URL = `${SERVER_URL}/questions.txt`;
+const START_TIME_URL = `${SERVER_URL}/start-time`;
+const SUBMIT_URL = `${SERVER_URL}/submit`;
 
 
 let questions = [];
 let currentQuestion = 0;
 let answers = [];
+let startTime = null;
 
 
 /* Elements */
@@ -70,6 +74,75 @@ function showScreen(screen) {
         });
 
     screen.classList.add("active");
+}
+
+
+/* Get start time */
+
+async function loadStartTime() {
+
+    const response =
+        await fetch(START_TIME_URL, {
+            cache: "no-store"
+        });
+
+    if (!response.ok) {
+        throw new Error(
+            "Could not load start time."
+        );
+    }
+
+    const data =
+        await response.json();
+
+    if (!data.startTime) {
+        throw new Error(
+            "Start time is missing."
+        );
+    }
+
+    startTime =
+        new Date(data.startTime);
+
+    if (Number.isNaN(startTime.getTime())) {
+        throw new Error(
+            "Invalid start time."
+        );
+    }
+
+    return startTime;
+}
+
+
+/* Check whether exam can start */
+
+function canStartExam() {
+
+    if (!startTime) {
+        return false;
+    }
+
+    return new Date() >= startTime;
+}
+
+
+/* Update start button */
+
+function updateStartButton() {
+
+    if (!startTime) {
+        startButton.disabled = true;
+        return;
+    }
+
+    if (canStartExam()) {
+
+        startButton.disabled = false;
+
+    } else {
+
+        startButton.disabled = true;
+    }
 }
 
 
@@ -161,6 +234,10 @@ startButton.addEventListener(
     "click",
     async () => {
 
+        if (!canStartExam()) {
+            return;
+        }
+
         startButton.disabled = true;
 
         try {
@@ -192,9 +269,7 @@ startButton.addEventListener(
                 "Question data could not be loaded."
             );
 
-        } finally {
-
-            startButton.disabled = false;
+            updateStartButton();
         }
     }
 );
@@ -225,7 +300,6 @@ function renderQuestion() {
                 document.createElement("button");
 
             button.type = "button";
-
             button.className = "choice";
 
             if (
@@ -241,9 +315,7 @@ function renderQuestion() {
                 "choice-marker";
 
             marker.textContent =
-                String.fromCharCode(
-                    65 + index
-                );
+                String.fromCharCode(65 + index);
 
             const text =
                 document.createElement("span");
@@ -330,7 +402,7 @@ previousButton.addEventListener(
 );
 
 
-/* Next / submit */
+/* Next */
 
 nextButton.addEventListener(
     "click",
@@ -340,7 +412,9 @@ nextButton.addEventListener(
             currentQuestion === questions.length - 1;
 
         if (lastQuestion) {
+
             openConfirmScreen();
+
             return;
         }
 
@@ -390,12 +464,103 @@ confirmBack.addEventListener(
 
 submitButton.addEventListener(
     "click",
-    () => {
+    async () => {
 
-        showScreen(finishedScreen);
+        submitButton.disabled = true;
 
-        document.getElementById(
-            "score-display"
-        ).textContent = "-";
+        try {
+
+            const submission = {
+
+                submittedAt:
+                    new Date().toISOString(),
+
+                startTime:
+                    startTime.toISOString(),
+
+                answers:
+                    answers.map(
+                        (answer, index) => ({
+                            question: index + 1,
+                            answer: answer
+                        })
+                    )
+            };
+
+            const response =
+                await fetch(
+                    SUBMIT_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                submission
+                            )
+                    }
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Submission failed."
+                );
+            }
+
+            showScreen(finishedScreen);
+
+            document.getElementById(
+                "score-display"
+            ).textContent = "-";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Submission failed."
+            );
+
+            submitButton.disabled = false;
+        }
     }
 );
+
+
+/* Initialize */
+
+async function initialize() {
+
+    startButton.disabled = true;
+
+    try {
+
+        await loadStartTime();
+
+        updateStartButton();
+
+        /*
+         * Check again periodically.
+         * This allows the button to become
+         * available when the start time arrives.
+         */
+
+        setInterval(
+            updateStartButton,
+            1000
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        startButton.disabled = true;
+    }
+}
+
+
+initialize();
