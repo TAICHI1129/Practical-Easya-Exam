@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Praktika Easya-o Egzamo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+
+                <div>
+                    <div class="brand-name">
+                        Praktika Easya-o Egzamo
+                    </div>
+                    <div class="brand-subtitle">
+                        Standard
+                    </div>
+                </div>
+            </div>
+
+            <div class="candidate">
+                <span id="candidate-name">egzamero</span>
+            </div>
+        </header>
+
+
+        <main>
+
+            <!-- Start screen -->
+            <section id="start-screen" class="screen active">
+
+                <div class="start-card">
+
+                    <div class="start-icon">
+                        E
+                    </div>
+
+                    <h1>Praktika Easya-o Egzamo</h1>
+
+                    <div class="exam-type">
+                        Standard
+                    </div>
+
+                    <p class="start-description">
+                        Easyaev
+                    </p>
+
+                    <button id="start-button" class="primary-button">
+                        starte
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- Exam screen -->
+            <section id="exam-screen" class="screen">
+
+                <div class="exam-header">
+
+                    <div>
+                        <div class="section-label">
+                            kuesto
+                        </div>
+
+                        <h2 id="section-title">
+                            -
+                        </h2>
+                    </div>
+
+                    <div class="progress-box">
+                        <div id="progress-text">
+                            1 / 1
+                        </div>
+
+                        <div class="progress-track">
+                            <div id="progress-bar"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="question-card">
+
+                    <div class="question-number">
+                        <span>svaro</span>
+                        <span id="question-number">1</span>
+                    </div>
+
+                    <div id="question-text" class="question-text">
+                        -
+                    </div>
+
+                    <div class="choice-list" id="choice-list">
+                    </div>
+
+                </div>
+
+
+                <div class="exam-footer">
+
+                    <button id="previous-button"
+                            class="secondary-button">
+                        ir bak
+                    </button>
+
+                    <div class="answer-status">
+                        <span id="answer-status">
+                            non-svared
+                        </span>
+                    </div>
+
+                    <button id="next-button"
+                            class="primary-button">
+                        ir nekset
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- Confirm screen -->
+            <section id="confirm-screen" class="screen">
+
+                <div class="confirm-card">
+
+                    <div class="confirm-icon">
+                        ?
+                    </div>
+
+                    <h1>konfirme</h1>
+
+                    <p id="confirm-text">
+                        -
+                    </p>
+
+                    <div class="confirm-actions">
+
+                        <button id="confirm-back"
+                                class="secondary-button">
+                            ir bak
+                        </button>
+
+                        <button id="submit-button"
+                                class="primary-button">
+                            skile
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Finished screen -->
+            <section id="finished-screen" class="screen">
+
+                <div class="finished-card">
+
+                    <div class="finished-icon">
+                        ✓
+                    </div>
+
+                    <h1>finised</h1>
+
+                    <p>rezultato</p>
+
+                    <div class="result-placeholder">
+                        <span>skoro</span>
+                        <strong id="score-display">-</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
